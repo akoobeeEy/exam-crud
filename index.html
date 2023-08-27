@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind css script settings -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            titleText: ["Tilt Prism", "cursive"],
+            beaText: ["Hachi Maru Pop", "cursive"],
+          },
+          colors: {
+            bgColor: "#040D1F",
+            lightText: "#c4cfde",
+            cardBg: "#2B3844",
+            designColor: "#ff014f",
+          },
+
+          boxShadow: {
+            shadowOne: "10px 10px 19px #1c1e22, -10px -10px 19px #262a2e",
+          },
+        },
+      },
+    };
+  </script>
+  <!-- Tailwind css style settings -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .container {
+          @apply mx-auto px-14 md:px-24 xl:px-28;
+        }
+        .display-none {
+          @apply hidden;
+        }
+        .input-block {
+          @apply rounded-lg shadow-md shadow-white bg-black
+          w-full
+        }
+        .search-input {
+          @apply px-3 py-2 font-beaText border-none;
+        }
+        .teacher-button {
+          @apply px-3 py-1 bg-black text-green-300 font-beaText  font-bold duration-100 
+          hover:bg-slate-950 hover:text-white active:shadow-none;
+        }
+
+        .modal-label {
+          @apply text-base font-beaText text-yellow-400 cursor-copy;
+        }
+        .teacher-input {
+          @apply px-4 bg-black text-white text-base font-beaText border-none shadow-lg rounded-md shadow-yellow-400;
+        }
+        .page-item{
+          @apply px-3 py-1 font-beaText text-white
+        }
+        .page-link{
+          @apply bg-black text-xl text-yellow-600 w-[135px] h-[50px] rounded-lg border-none 
+        }
+      }
+    </style>
+  <title>CRUD</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+  <link rel="stylesheet" href="./css/index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="bg-bgColor">
+  <header>
+    <div class="flex items-center justify-center px-10 header-top">
+      <h1
+        class="px-3 text-2xl font-semibold text-yellow-500 duration-100 cursor-pointer font-titleText hover:-translate-y-1">
+        All Teachers: <span class="text-black teachers-count font-beaText"></span>
+      </h1>
+      <i class="fa-solid fa-eye"></i>
+    </div>
+    <div class="container">
+      <div class="flex gap-10 mt-5">
+        <div class="mb-3 input-group input-block">
+          <input type="text" class="text-white form-control search-input" placeholder="Search... " />
+          <span class="py-2 border-none bg-bgColor input-group-text">
+            <select class="text-yellow-500 bg-black border-none form-select focus:shadow-none font-textTitle teach-merried-filter">
+              <option value="All">All</option>
+              <option value="true">Oilali</option>
+              <option value="false">Nikohda bo'lmagan</option>
+            
+            </select>
+          
+          </span>
+          <button class="btn teacher-button" id="add-teacher-btn" type="button" data-bs-toggle="modal"
+            data-bs-target="#teacher-modal">
+            Add Teacher
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- loader -->
+   
+    <section class="relative py-14">
+      <div class="container">
+
+
+
+        <div class="row teach-row">
+          
+        </div>
+        <div class="flex justify-center pagination"></div>
+      </div>
+      </div>
+    </section>
+    <!-- Modal -->
+    <div class="modal fade" id="teacher-modal">
+      <div class="modal-dialog">
+        <div class="bg-bgColor modal-content">
+          <form class="row g-3 teacher-form">
+            <div class="modal-header">
+              <h1 class="text-white modal-title fs-5" id="teacher-modal">
+                Teacher Form
+              </h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="firstName" class="form-label modal-label">First name</label>
+                <input type="text" class="text-white form-control teacher-input" id="firstName"
+                  placeholder="Enter your First Name" required />
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">
+                  Please select a valid state.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="lastName" class="form-label modal-label">Last name</label>
+                <input type="text" class="text-white form-control teacher-input" id="lastName" required />
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">
+                  Please select a valid state.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="avatar" class="form-label modal-label">Teacher image</label>
+                <input type="text" class="text-white form-control teacher-input" id="avatar" required />
+                <div class="valid-feedback">Looks good!</div>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label modal-label">Email</label>
+                <input type="email" class="text-white form-control teacher-input" id="email" required />
+                <div class="invalid-feedback">
+                  Please provide a valid email.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="phoneNumber" class="form-label modal-label">Phone Number</label>
+                <div class="input-group has-validation">
+                  <input type="tel" class="text-white form-control teacher-input" id="phoneNumber" required />
+                  <div class="invalid-feedback">
+                    Please choose a username.
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="group" class="form-label modal-label">Groups</label>
+                <input type="text" class="text-white form-control teacher-input" id="group" required />
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">
+                  Please select a valid state.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox"  id="isMarried"  />
+                  <label class="form-check-label modal-label" for="isMarried">
+                    Did you get married
+                  </label>
+                  <div class="invalid-feedback">
+                    You must agree before submitting.
+                  </div>
+                </div>
+              </div>
+
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn teacher-button" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button type="submit" id="save-btn" class="btn btn-primary teacher-button">
+                Save changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script   src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+    integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script  src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./js/const.js"></script>
+  <script src="./js/main.js"></script>
+  <script src="./js/teacher.js"></script>
+</body>
+
+</html>
