@@ -7,6 +7,7 @@ const studentModal = document.querySelector("#student-modal");
 const addSaveStudentBtn = document.querySelector("#save-btn");
 const addStudentBtn = document.querySelector("#add-student-btn");
 const studentSearchInput = document.querySelector(".student-search-input");
+const studentFilter = document.querySelector(".student-filter");
 
 let selected = null;
 let stSearch = "";
@@ -105,6 +106,32 @@ function getStudentsCard({
     `;
 }
 
+studentFilter.addEventListener("change", function () {
+  axiosStudents
+    .get(`${teacherId}/students`, {
+      params: {
+        isWork:
+          studentFilter.value === "false"
+            ? true
+            : studentFilter.value === "true"
+            ? false
+            : "",
+      },
+    })
+    .then((response) => {
+      const filteredStudents = response.data;
+      console.log(filteredStudents);
+      studentRow.innerHTML = "";
+
+      filteredStudents.map((el) => {
+        studentRow.innerHTML += getStudentsCard(el);
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
 async function getStudents() {
   try {
     studentRow.innerHTML = ` <div class="lds-hourglass"></div>`;
@@ -161,10 +188,10 @@ addStudentBtn.addEventListener("click", () => {
   studentForm.avatar.value = "";
   studentForm.phoneNumber.value = "";
   studentForm.isWork.checked = "";
-  studentForm.isMarried.checked = "",
-  studentForm.birthday.value = "",
-  studentForm.field.value = "",
-  addSaveStudentBtn.innerHTML = "Add Student";
+  (studentForm.isMarried.checked = ""),
+    (studentForm.birthday.value = ""),
+    (studentForm.field.value = ""),
+    (addSaveStudentBtn.innerHTML = "Add Student");
 });
 
 // student form edit && delete

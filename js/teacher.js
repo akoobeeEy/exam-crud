@@ -12,7 +12,6 @@ console.log(teachMarriedFilter);
 let search = "";
 let selected = null;
 let activePage = 1;
-let married;
 let selectedValue = null;
 function getTeachCard({
   id,
@@ -86,56 +85,6 @@ function getTeachCard({
     </div>
     `;
 }
-
-// Get teachers api
-async function getTeachers() {
-  try {
-    teachRow.innerHTML = ` <div class="lds-hourglass"></div>`;
-    let params = { firstName: search };
-    let paramsWithPagination = {
-      firstName: search,
-      page: activePage,
-      limit: LIMIT,
-      isMarried: married,
-    };
-    let { data } = await request.get(`teachers`, { params });
-    // pagination
-    let { data: dataWithPagination } = await request.get("teachers", {
-      params: paramsWithPagination,
-    });
-
-    let pages = Math.ceil(data.length / LIMIT);
-
-    pagination.innerHTML = `<li class="page-item ${
-      activePage === 1 ? "disabled" : ""
-    }">
-       <button page="-" class="page-link">Previous</button>
-     </li>`;
-
-    for (let i = 1; i <= pages; i++) {
-      pagination.innerHTML += `
-         <li class="page-item ${
-           i === activePage ? "active" : "bg-transparent"
-         }"><button page="${i}" class="page-link">${i}</button></li>
-       `;
-    }
-    pagination.innerHTML += `<li class="page-item ${
-      activePage === pages ? "disabled" : ""
-    }">
-       <button page="+" class="page-link">Next</button>
-     </li>`;
-
-     teachRow.innerHTML = "";
-    teacherCount.textContent = data.length;
-    dataWithPagination.map((teach) => {
-      teachRow.innerHTML += getTeachCard(teach);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-getTeachers();
 
 // Search
 teachSearchInput.addEventListener("keyup", function () {
@@ -222,7 +171,84 @@ window.addEventListener("click", async (e) => {
 // teacher married filter start here
 
 teachMarriedFilter.addEventListener("change", function () {
-  married = this.value;
-  console.log(married);
-  getTeachers();
+  let selectedValue = teachMarriedFilter.value;
+  console.log(selectedValue);
+  request
+    .get(`teachers`, {
+      params: {
+        isMarried:
+          selectedValue === "false"
+            ? false
+            : selectedValue === "true"
+            ? true
+            : "",
+      },
+    })
+
+    .then((response) => {
+      const filterTeach = response.data;
+      console.log(filterTeach);
+      teachRow.innerHTML = "";
+
+      filterTeach.map((married) => {
+        teachRow.innerHTML += getTeachCard(married);
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 });
+// Get teachers api
+async function getTeachers(selectedValue) {
+  try {
+    const selecTeacher = teachMarriedFilter.value;
+    teachRow.innerHTML = ` <div class="lds-hourglass"></div>`;
+   
+      selecTeacher === "false" ? false : selecTeacher === "true" ? true : "";
+    let params = { firstName: search };
+    let paramsWithPagination = {
+      firstName: search,
+      page: activePage,
+      limit: LIMIT,
+    };
+    if (selectedValue !== undefined) {
+      params.isMarried = selectedValue;
+    }
+    let { data } = await request.get(`teachers`, { params });
+    // pagination
+    let { data: dataWithPagination } = await request.get("teachers", {
+      params: paramsWithPagination,
+    });
+
+    let pages = Math.ceil(data.length / LIMIT);
+
+    pagination.innerHTML = `<li class="page-item ${
+      activePage === 1 ? "disabled" : ""
+    }">
+       <button page="-" class="page-link">Previous</button>
+     </li>`;
+
+    for (let i = 1; i <= pages; i++) {
+      pagination.innerHTML += `
+         <li class="page-item ${
+           i === activePage ? "active" : "bg-transparent"
+         }"><button page="${i}" class="page-link">${i}</button></li>
+       `;
+    }
+    pagination.innerHTML += `<li class="page-item ${
+      activePage === pages ? "disabled" : ""
+    }">
+       <button page="+" class="page-link">Next</button>
+     </li>`;
+
+    teachRow.innerHTML = "";
+    teacherCount.textContent = data.length;
+    dataWithPagination.map((teach) => {
+      teachRow.innerHTML += getTeachCard(teach);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+getTeachers(selectedValue);
